@@ -4,6 +4,7 @@ import base64
 from pathlib import Path
 from typing import List, Dict, Optional, Any
 import httpx
+from datetime import datetime
 from mcp.server.fastmcp import FastMCP, Context
 from mcp.server.session import ServerSession
 
@@ -56,6 +57,32 @@ async def chat(prompt: str,  conversation_history: Optional[List[Dict[str, str]]
     await client.aclose()
     
     return answer
+    
+@mcp.tool()
+async def list_models() -> str:
+    client = create_client()
+    response = await client.get("/models")
+    response.raise_for_status()
+    data = response.json()
+    
+    models_info = []
+    for model in data.get("data", []):
+        model_id = model.get("id", "")
+        created_timestamp = model.get("created", 0)
+        owned_by = model.get("owned_by", "")
+        
+        # Convert Unix timestamp to date
+        if created_timestamp:
+            created_date = datetime.fromtimestamp(created_timestamp).strftime("%Y-%m-%d")
+        else:
+            created_date = ""
+        
+        models_info.append(f"- {model_id} (Owner: {owned_by}, Created: {created_date})")
+    
+    await client.aclose()
+    
+    return "Available Grok Models:\n" + "\n".join(models_info)
+
 
 def main():
 
