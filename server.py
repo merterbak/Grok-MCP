@@ -22,41 +22,6 @@ def create_client(timeout: float = 120.0):
         headers={"Authorization": f"Bearer {XAI_API_KEY}"},
         timeout=timeout
     )
-
-
-@mcp.tool()
-async def chat(prompt: str,  conversation_history: Optional[List[Dict[str, str]]] = None,model: str = "grok-4-fast",system_prompt: Optional[str] = None) -> str:
-
-    messages = []
-    
-    if conversation_history:
-        messages = conversation_history.copy()
-    elif system_prompt:
-            system_message = {
-                "role": "system",
-                "content": system_prompt
-            }
-            messages.append(system_message)
-    
-    user_message = {
-        "role": "user",
-        "content": prompt
-    }
-    messages.append(user_message)
-    
-    request_data = {
-        "model": model,
-        "messages": messages
-    }
-
-    client = get_client()
-    response = await client.post("/chat/completions", json=request_data)
-    response.raise_for_status()
-    data = response.json()
-    answer = data["choices"][0]["message"]["content"]
-    await client.aclose()
-    
-    return answer
     
 @mcp.tool()
 async def list_models() -> str:
@@ -83,7 +48,67 @@ async def list_models() -> str:
     
     return "Available Grok Models:\n" + "\n".join(models_info)
 
+@mcp.tool()
+async def chat(prompt: str,  conversation_history: Optional[List[Dict[str, str]]] = None,model: str = "grok-4-fast",system_prompt: Optional[str] = None) -> str:
+
+    messages = []
+    
+    if conversation_history:
+        messages = conversation_history.copy()
+    elif system_prompt:
+            system_message = {
+                "role": "system",
+                "content": system_prompt
+            }
+            messages.append(system_message)
+    
+    user_message = {
+        "role": "user",
+        "content": prompt
+    }
+    messages.append(user_message)
+    
+    request_data = {
+        "model": model,
+        "messages": messages
+    }
+
+    client = create_client()
+    response = await client.post("/chat/completions", json=request_data)
+    response.raise_for_status()
+    data = response.json()
+    answer = data["choices"][0]["message"]["content"]
+    await client.aclose()
+    
+    return answer
+    
+
+    
+@mcp.tool()
+async def generate_image(prompt: str, n: int = 1, response_format: str = "url", model: str = "grok-2-image-1212") -> dict:
+    
+    client = create_client()
+    request_data = {
+        "model": model,
+        "prompt": prompt,
+        "n": n,
+        "response_format": response_format
+    }
+    response = await client.post("/images/generations", json=request_data)
+    response.raise_for_status()
+    data = response.json()
+    await client.aclose()
+      
+    images = data.get("data", [])
+    revised_prompt = images[0].get("revised_prompt", "")
+    
+    return {
+        "images": images,
+        "revised_prompt": revised_prompt
+    }
 
 def main():
-
     mcp.run()
+
+if __name__ == "__main__":
+    main()
