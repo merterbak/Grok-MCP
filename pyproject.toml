@@ -1,0 +1,14 @@
+[project]
+name = "mcp-grok"
+version = "0.1.0"
+description = "MCP server for XAI's API services"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["mcp", "grok", "xai"]
+dependencies = [
+    "mcp[cli]>=1.13.1",
+    "httpx>=0.28.1",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.5.0",
+]
