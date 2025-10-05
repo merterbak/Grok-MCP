@@ -155,6 +155,11 @@ Delete a stored conversation from xAI servers.
 
 **Parameters:**
 - `response_id` (required): The response ID to delete
+  
+## Roadmap
+
+- add docker support
+- fix chat vision model tool
 
 ## 📄 License
 
