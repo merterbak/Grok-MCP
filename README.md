@@ -40,6 +40,12 @@ source .venv/bin/activate
 ```bash
 uv pip install -e .
 ```
+ (Optional) or you can sync dependencies
+
+```bash
+uv sync --all-extras
+```
+
 
 ## 🔧 Configuration
 
@@ -66,13 +72,24 @@ Add this to your Claude Desktop configuration file:
   }
 }
 ```
-## Usage
+---
 
 For stdio:
 
 ```bash
 uv run python main.py
 ```
+Docker:
+
+```bash
+docker compose up --build
+```
+Mcp Inspector:
+
+```bash
+mcp dev main.py
+```
+
 
 ## 📚 Available Tools
 
