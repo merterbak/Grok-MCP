@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  grok-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: grok-mcp:latest
+    container_name: grok-mcp-server
+    environment:
+      - XAI_API_KEY=${XAI_API_KEY}
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
