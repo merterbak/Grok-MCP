@@ -72,6 +72,30 @@ Add this to your Claude Desktop configuration file:
   }
 }
 ```
+
+### Filesystem MCP (Optional)
+
+Claude Desktop can't send uploaded images in the chat to an MCP tool.
+The easiest fix is to use the official Filesystem MCP server which lets Claude access to files directly from your computer.
+After setting it up you’ll be able to just write the image’s file path (such as /Users/mert/Desktop/image.png) in chat and Claude can use it with any vision chat tool.
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/<your-username>/Desktop",
+        "/Users/<your-username>/Downloads"
+      ]
+    }
+  }
+}
+
+```
+
 ---
 
 For stdio:
@@ -183,11 +207,6 @@ Delete a stored conversation from xAI servers.
 **Parameters:**
 - `response_id` (required): The response ID to delete
   
-## Roadmap
-
-- add docker support
-- fix chat vision model tool
-
 ## 📄 License
 
 This project is open source and available under the MIT License.
