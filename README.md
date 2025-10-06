@@ -30,9 +30,15 @@ git clone https://github.com/merterbak/Grok-MCP.git
 cd Grok-MCP
 ```
 
-2. Install dependencies using `uv`:
+2. Create a venv environment:
 ```bash
-uv sync
+uv venv
+source .venv/bin/activate
+```
+
+3. Installation:
+```bash
+uv pip install -e .
 ```
 
 ## 🔧 Configuration
