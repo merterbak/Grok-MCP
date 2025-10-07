@@ -76,7 +76,7 @@ Add this to your Claude Desktop configuration file:
 ### Filesystem MCP (Optional)
 
 Claude Desktop can't send uploaded images in the chat to an MCP tool.
-The easiest fix is to use the official Filesystem MCP server which lets Claude access to files directly from your computer.
+The easiest way to give access to files directly from your computer is official Filesystem MCP server.
 After setting it up you’ll be able to just write the image’s file path (such as /Users/mert/Desktop/image.png) in chat and Claude can use it with any vision chat tool.
 
 ```json
