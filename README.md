@@ -6,7 +6,7 @@ MCP server for xAI's Grok API, providing access to capabilities including image 
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@merterbak/Grok-MCP/badge" />
 </a>
 
-## 🚀 Features
+## Features
 
 - **Multiple Grok Models**: Access to Grok-4, Grok-4-Fast, Grok-3-Mini, and more
 - **Image Generation**: Create images using Grok's image generation model
@@ -16,13 +16,13 @@ MCP server for xAI's Grok API, providing access to capabilities including image 
 - **Stateful Conversations**: Use this nrewly released feature to maintain conversation context as id across multiple requests
 - **Conversation History**: Set it on or off to use prior context 
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.11 or higher
 - xAI API key ([Get one here](https://console.x.ai))
 - `uv` package manager 
 
-## 🛠️ Installation
+## Installation
 
 1. Clone the repository:
 ```bash
@@ -47,7 +47,7 @@ uv sync --all-extras
 ```
 
 
-## 🔧 Configuration
+## Configuration
 
 ### Claude Desktop Integration
 
@@ -115,7 +115,7 @@ mcp dev main.py
 ```
 
 
-## 📚 Available Tools
+## Available Tools
 
 ### 1. `list_models`
 List all available Grok models with creation dates and ownership information.
@@ -207,6 +207,6 @@ Delete a stored conversation from xAI servers.
 **Parameters:**
 - `response_id` (required): The response ID to delete
   
-## 📄 License
+## License
 
 This project is open source and available under the MIT License.
