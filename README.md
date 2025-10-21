@@ -2,10 +2,6 @@
 
 MCP server for xAI's Grok API, providing access to capabilities including image understanding, image generation, live web search, and reasoning models.
 
-<a href="https://glama.ai/mcp/servers/@merterbak/Grok-MCP">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@merterbak/Grok-MCP/badge" />
-</a>
-
 ## Features
 
 - **Multiple Grok Models**: Access to Grok-4, Grok-4-Fast, Grok-3-Mini, and more
