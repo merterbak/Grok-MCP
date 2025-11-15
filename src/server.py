@@ -23,6 +23,8 @@ mcp = FastMCP(
 
 conversation_history: List[Dict[str, str]] = []
 
+# Tool descriptions were added so LLM can call tools more correctly 
+
 @mcp.tool()
 async def list_models() -> str:
     """
