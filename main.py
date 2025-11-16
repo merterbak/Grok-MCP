@@ -11,8 +11,8 @@ if __name__ == "__main__":
         print("Please set your API key in .env file or export it: export XAI_API_KEY='your_api_key' ")
         print("Starting server will fail on first API call")
     else:
-        print("✓ XAI_API_KEY found")
-        print("✓ Started MCP-Grok server")
+        print("XAI_API_KEY found")
+        print("Started MCP-Grok server")
     
     main()
 
