@@ -20,7 +20,7 @@ MCP server for xAI's Grok API, providing access to capabilities including image 
 
 - Python 3.11 or higher
 - xAI API key ([Get one here](https://console.x.ai))
-- `uv` package manager 
+- [Astral UV](https://docs.astral.sh/uv/getting-started/installation/)
 
 ## Installation
 
@@ -33,17 +33,13 @@ cd Grok-MCP
 2. Create a venv environment:
 ```bash
 uv venv
-source .venv/bin/activate
+source .venv/bin/activate # macOS/Linux or .venv\Scripts\activate on Windows
 ```
 
-3. Installation:
-```bash
-uv pip install -e .
-```
- (Optional) or you can sync dependencies
+3. Install dependencies:
 
 ```bash
-uv sync --all-extras
+uv sync
 ```
 
 
