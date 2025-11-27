@@ -8,12 +8,12 @@ MCP server for xAI's Grok API, providing access to capabilities including image 
 
 ## Features
 
-- **Multiple Grok Models**: Access to Grok-4, Grok-4-Fast, Grok-3-Mini, and more
+- **Multiple Grok Models**: Access to Grok-4.1-Fast-Reasoning, Grok-4.1-Fast-Non-Reasoning, Grok-4-Fast, Grok-3-Mini, and more
 - **Image Generation**: Create images using Grok's image generation model
 - **Vision Capabilities**: Analyze images with Grok's vision models
 - **Live Web Search**: Real time web search with citations from news, web, X, and RSS feeds
-- **Reasoning Models**: Advanced reasoning with extended thinking models (Grok-3-Mini, Grok-4)
-- **Stateful Conversations**: Use this nrewly released feature to maintain conversation context as id across multiple requests
+- **Reasoning Models**: Advanced reasoning with extended thinking models (Grok-4.1-Fast-Reasoning, Grok-3-Mini, Grok-4)
+- **Stateful Conversations**: Use this newly released feature to maintain conversation context as id across multiple requests
 - **Conversation History**: Set it on or off to use prior context 
 
 ## Prerequisites
@@ -121,7 +121,7 @@ Standard chat completion with extensive customization options.
 
 **Parameters:**
 - `prompt` (required): Your message
-- `model`: Model to use (default: "grok-4-fast")
+- `model`: Model to use (default: "grok-4-1-fast-non-reasoning")
 - `system_prompt`: Optional system instruction
 - `use_conversation_history`: Enable multi-turn conversations
 - `temperature`, `max_tokens`, `top_p`: Generation parameters
@@ -133,7 +133,7 @@ Get detailed reasoning along with the response.
 
 **Parameters:**
 - `prompt` (required): Your question or task
-- `model`: "grok-4", "grok-3-mini", or "grok-3-mini-fast"
+- `model`: "grok-4", "grok-3-mini", "grok-3-mini-fast", or "grok-4-1-fast-reasoning" (default: "grok-4-1-fast-reasoning")
 - `reasoning_effort`: "low" or "high" (not for grok-4)
 - `system_prompt`, `temperature`, `max_tokens`, `top_p`
 
@@ -147,7 +147,7 @@ Analyze images with natural language queries.
 - `image_paths`: List of local image file paths
 - `image_urls`: List of image URLs
 - `detail`: "auto", "low", or "high"
-- `model`: Vision-capable model (default: "grok-4-0709")
+- `model`: Vision-capable model (default: "grok-4-1-fast-non-reasoning")
 
 **Supported formats:** JPG, JPEG, PNG
 
@@ -167,7 +167,7 @@ Search the web in real-time with source citations.
 
 **Parameters:**
 - `prompt` (required): Your search query
-- `model`: Model to use (default: "grok-4")
+- `model`: Model to use (default: "grok-4-1-fast-non-reasoning")
 - `mode`: "on" or "off"
 - `return_citations`: Include source citations (default: true)
 - `from_date`, `to_date`: Date range (YYYY-MM-DD)
@@ -184,7 +184,7 @@ Maintain conversation state across multiple requests on xAI servers.
 **Parameters:**
 - `prompt` (required): Your message
 - `response_id`: Previous response ID to continue conversation
-- `model`: Model to use (default: "grok-4")
+- `model`: Model to use (default: "grok-4-1-fast-non-reasoning")
 - `system_prompt`: System instruction (only for new conversations)
 - `include_reasoning`: Include reasoning summary
 - `temperature`, `max_tokens`
