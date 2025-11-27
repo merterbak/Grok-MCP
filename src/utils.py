@@ -15,8 +15,8 @@ if XAI_API_KEY:
 XAI_URL = "https://api.x.ai/v1"
 XAI_STATE_URL = "https://api.x.ai"
 
-REASONING_MODELS = ["grok-4", "grok-3-mini", "grok-3-mini-fast"]
-VISION_MODELS = ["grok-4-0709", "grok-4", "grok-4-fast"]
+REASONING_MODELS = ["grok-4", "grok-3-mini", "grok-3-mini-fast", "grok-4-1-fast-reasoning"]
+VISION_MODELS = ["grok-4-0709", "grok-4", "grok-4-fast", "grok-4-1-fast-non-reasoning"]
 IMAGE_GENERATION_MODELS = ["grok-2-image-1212"]
 
 

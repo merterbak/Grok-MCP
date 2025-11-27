@@ -47,7 +47,7 @@ async def list_models() -> str:
         created_timestamp = model.get("created", 0)
         owned_by = model.get("owned_by", "")
         
-        # Convert Unix timestamp to date
+        # Convert Unix timestamp to date here
         if created_timestamp:
             created_date = datetime.fromtimestamp(created_timestamp).strftime("%Y-%m-%d")
         else:
@@ -109,7 +109,7 @@ async def chat_with_vision(
     image_paths: Optional[List[str]] = None,
     image_urls: Optional[List[str]] = None,
     detail: str = "auto",
-    model: str = "grok-4-0709"
+    model: str = "grok-4-1-fast-non-reasoning"
 ) -> str:
     """
     Analyzes images and answers questions about them using Grok's vision models.
@@ -123,7 +123,7 @@ async def chat_with_vision(
         image_paths: List of local file paths to images (optional)
         image_urls: List of image URLs from the web (optional)
         detail: How closely to analyze ("auto", "low", or "high")
-        model: Which vision-capable model to use (default is grok-4-0709)
+        model: Which vision-capable model to use (default is grok-4-1-fast-non-reasoning)
     
     Returns the AI's response as a string describing or analyzing the images.
     """
@@ -175,7 +175,7 @@ async def chat_with_vision(
 @mcp.tool()
 async def chat(
     prompt: str,
-    model: str = "grok-4-fast",
+    model: str = "grok-4-1-fast-non-reasoning",
     system_prompt: Optional[str] = None,
     use_conversation_history: bool = False,
     temperature: Optional[float] = None,
@@ -196,7 +196,7 @@ async def chat(
     
     Args:
         prompt: What you want to ask or have the AI do
-        model: Which Grok model to use (default is grok-4-fast)
+        model: Which Grok model to use (default is grok-4-1-fast-non-reasoning)
         system_prompt: Instructions for how the AI should behave (only used at start)
         use_conversation_history: Keep context between messages (default False)
         temperature: Creativity level 0-2 (higher = more creative)
@@ -282,7 +282,7 @@ async def chat(
 @mcp.tool()
 async def chat_with_reasoning(
     prompt: str,
-    model: str = "grok-3-mini",
+    model: str = "grok-4-1-fast-reasoning",
     system_prompt: Optional[str] = None,
     reasoning_effort: Optional[str] = None,
     temperature: Optional[float] = None,
@@ -295,7 +295,7 @@ async def chat_with_reasoning(
     This is perfect for math problems, logic puzzles, or anything requiring careful
     thinking. You'll get both the final answer AND the reasoning process that led to
     it. Think of it like showing your work in math class. Only works with reasoning
-    models: grok-4, grok-3-mini, or grok-3-mini-fast.
+    models: grok-4, grok-3-mini, grok-3-mini-fast, or grok-4-1-fast-reasoning.
     
     Args:
         prompt: The problem or question you need solved
@@ -310,8 +310,8 @@ async def chat_with_reasoning(
     process), and 'usage' (token counts).
     """
     
-    if model not in ["grok-4", "grok-3-mini", "grok-3-mini-fast"]:
-        raise ValueError(f"Model {model} isn't a reasoning model. Use 'grok-4', 'grok-3-mini', or 'grok-3-mini-fast'.")
+    if model not in ["grok-4", "grok-3-mini", "grok-3-mini-fast", "grok-4-1-fast-reasoning"]:
+        raise ValueError(f"Model {model} isn't a reasoning model. Use 'grok-4', 'grok-3-mini', 'grok-3-mini-fast', or 'grok-4-1-fast-reasoning'.")
     
     messages = []
     
@@ -364,7 +364,7 @@ async def chat_with_reasoning(
 @mcp.tool()
 async def live_search(
     prompt: str,
-    model: str = "grok-4",
+    model: str = "grok-4-1-fast-non-reasoning",
     mode: str = "on",
     return_citations: bool = True,
     from_date: Optional[str] = None,
@@ -481,7 +481,7 @@ async def live_search(
 async def stateful_chat(
     prompt: str,
     response_id: Optional[str] = None,
-    model: str = "grok-4",
+    model: str = "grok-4-1-fast-non-reasoning",
     system_prompt: Optional[str] = None,
     include_reasoning: bool = False,
     temperature: Optional[float] = None,
@@ -499,7 +499,7 @@ async def stateful_chat(
     Args:
         prompt: What you want to say in this turn of the conversation
         response_id: ID from a previous response to continue that conversation (optional)
-        model: Which Grok model to use (default is grok-4)
+        model: Which Grok model to use (default is grok-4-1-fast-non-reasoning)
         system_prompt: Instructions for the AI (only used when starting new conversation)
         include_reasoning: Get a summary of the model's thinking process (default False)
         temperature: Controls creativity 0-2
