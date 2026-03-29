@@ -7,6 +7,10 @@ MCP server for xAI's Grok API with agentic tool calling, image and video generat
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@merterbak/Grok-MCP/badge" />
 </a>
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/merterbak-grok-mcp).
+
 ## Features
 
 - **Agentic Tool Calling**: Web search, X search, and code execution with multi-step reasoning
