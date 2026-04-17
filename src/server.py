@@ -118,7 +118,8 @@ async def generate_image(
     image_url: Optional[str] = None,
     n: int = 1,
     image_format: str = "url",
-    aspect_ratio: Optional[str] = None
+    aspect_ratio: Optional[str] = None,
+    resolution: Optional[str] = None
 ):
     
     client = Client(api_key=XAI_API_KEY)
@@ -134,6 +135,8 @@ async def generate_image(
     
     if aspect_ratio:
         params["aspect_ratio"] = aspect_ratio
+    if resolution:
+        params["resolution"] = resolution
     
     images = client.image.sample_batch(**params)
     client.close()
@@ -156,7 +159,8 @@ async def generate_video(
     video_url: Optional[str] = None,
     duration: Optional[int] = None,
     aspect_ratio: Optional[str] = None,
-    resolution: Optional[str] = None
+    resolution: Optional[str] = None,
+    reference_image_urls: Optional[List[str]] = None
 ):
     
     client = Client(api_key=XAI_API_KEY)
@@ -186,6 +190,8 @@ async def generate_video(
         params["aspect_ratio"] = aspect_ratio
     if resolution:
         params["resolution"] = resolution
+    if reference_image_urls:
+        params["reference_image_urls"] = reference_image_urls
 
     response = client.video.generate(**params)
     client.close()

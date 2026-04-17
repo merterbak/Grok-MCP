@@ -179,6 +179,7 @@ Create or edit images from text.
 | `image_url` | str | None | Image URL to edit |
 | `n` | int | 1 | Number of images (1-10) |
 | `aspect_ratio` | str | None | like "16:9", "1:1" |
+| `resolution` | str | None | "1k" or "2k" |
 
 ---
 
@@ -196,6 +197,7 @@ Create or edit videos from text, images, or existing videos.
 | `duration` | int | None | Duration in seconds (1-15) |
 | `aspect_ratio` | str | None | like "16:9", "4:3" |
 | `resolution` | str | None | "720p" or "480p" |
+| `reference_image_urls` | List[str] | None | Reference image URLs for conditioning |
 
 ---
 
