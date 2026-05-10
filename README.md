@@ -10,7 +10,7 @@ MCP server for xAI's Grok API with agentic tool calling, image and video generat
 ## Features
 
 - **Agentic Tool Calling**: Web search, X search, and code execution with multi-step reasoning
-- **Multiple Grok Models**: Access to latest models such as grok-4.20-0309-reasoning, grok-4-1-fast-reasoning and more
+- **Multiple Grok Models**: Access to latest models such as grok-4.20-0309-reasoning, grok-4.3 and more
 - **Image and Video Generation**: Create images and videos using Grok Imagine
 - **Vision Capabilities**: Analyze images with Grok's vision models
 - **Files API**: Upload, manage, and chat with documents 

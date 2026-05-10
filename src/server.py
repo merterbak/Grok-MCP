@@ -20,7 +20,7 @@ READONLY = ToolAnnotations(readOnlyHint=True)
 async def chat(
     prompt: str,
     session: Optional[str] = None,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     system_prompt: Optional[str] = None,
     agent_count: Optional[int] = None,
 ):
@@ -32,7 +32,7 @@ async def chat(
     Args:
         prompt: User message to send to the model.
         session: Optional session name. Loads and appends history to `chats/{session}.json`.
-        model: Grok model id (default `grok-4-1-fast-reasoning`).
+        model: Grok model id (default `grok-4.3`).
         system_prompt: Optional system instruction prepended to the conversation.
         agent_count: 4 or 16. Only valid with `grok-4.20-multi-agent` for multi-agent research.
 
@@ -323,7 +323,7 @@ async def extend_video(
 async def chat_with_vision(
     prompt: str,
     session: Optional[str] = None,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     image_paths: Optional[List[str]] = None,
     image_urls: Optional[List[str]] = None,
     detail: str = "auto"
@@ -336,7 +336,7 @@ async def chat_with_vision(
     Args:
         prompt: Question or instruction about the image(s).
         session: Optional session name for persistent history in `chats/{session}.json`.
-        model: Vision-capable Grok model (default `grok-4-1-fast-reasoning`).
+        model: Vision-capable Grok model (default `grok-4.3`).
         image_paths: Local image file paths to analyze.
         image_urls: Public image URLs to analyze.
         detail: Image detail level. One of `"auto"`, `"low"`, or `"high"`.
@@ -383,7 +383,7 @@ async def chat_with_vision(
 @mcp.tool(annotations=READONLY)
 async def web_search(
     prompt: str,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     allowed_domains: Optional[List[str]] = None,
     excluded_domains: Optional[List[str]] = None,
     enable_image_understanding: bool = False,
@@ -397,7 +397,7 @@ async def web_search(
 
     Args:
         prompt: Search query or research question.
-        model: Grok model used to drive the agent (default `grok-4-1-fast-reasoning`).
+        model: Grok model used to drive the agent (default `grok-4.3`).
         allowed_domains: Restrict search to these domains (max 5, mutually exclusive with excluded).
         excluded_domains: Exclude these domains from search (max 5).
         enable_image_understanding: Let the agent analyze images it encounters.
@@ -449,7 +449,7 @@ async def web_search(
 @mcp.tool(annotations=READONLY)
 async def x_search(
     prompt: str,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     allowed_x_handles: Optional[List[str]] = None,
     excluded_x_handles: Optional[List[str]] = None,
     from_date: Optional[str] = None,
@@ -466,7 +466,7 @@ async def x_search(
 
     Args:
         prompt: Search query or question about X content.
-        model: Grok model driving the agent (default `grok-4-1-fast-reasoning`).
+        model: Grok model driving the agent (default `grok-4.3`).
         allowed_x_handles: Restrict search to these handles (max 10, mutually exclusive with excluded).
         excluded_x_handles: Exclude these handles (max 10).
         from_date: Inclusive start date as `DD-MM-YYYY`.
@@ -524,7 +524,7 @@ async def x_search(
 @mcp.tool()
 async def code_executor(
     prompt: str,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     max_turns: Optional[int] = None
 ):
     """Solve a task by letting Grok run Python in a stateful sandbox.
@@ -534,7 +534,7 @@ async def code_executor(
 
     Args:
         prompt: Task or question requiring computation.
-        model: Grok model driving the agent (default `grok-4-1-fast-reasoning`).
+        model: Grok model driving the agent (default `grok-4.3`).
         max_turns: Cap the number of reasoning/execution turns.
 
     Returns:
@@ -564,7 +564,7 @@ async def code_executor(
 async def grok_agent(
     prompt: str,
     session: Optional[str] = None,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     file_ids: Optional[List[str]] = None,
     image_urls: Optional[List[str]] = None,
     image_paths: Optional[List[str]] = None,
@@ -593,7 +593,7 @@ async def grok_agent(
     Args:
         prompt: Task or question for the agent.
         session: Optional session name for persistent history in `chats/{session}.json`.
-        model: Grok model driving the agent (default `grok-4-1-fast-reasoning`).
+        model: Grok model driving the agent (default `grok-4.3`).
         file_ids: IDs of previously uploaded files to attach as context.
         image_urls: Public image URLs to attach.
         image_paths: Local image files to attach (sent as base64 data URIs).
@@ -703,7 +703,7 @@ async def grok_agent(
 @mcp.tool()
 async def stateful_chat(
     prompt: str,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     response_id: Optional[str] = None,
     system_prompt: Optional[str] = None
 ):
@@ -714,7 +714,7 @@ async def stateful_chat(
 
     Args:
         prompt: User message to append.
-        model: Grok model id (default `grok-4-1-fast-reasoning`).
+        model: Grok model id (default `grok-4.3`).
         response_id: ID of the previous response to continue from (omit to start fresh).
         system_prompt: Optional system instruction. Applied only on the first turn.
 
@@ -894,7 +894,7 @@ async def chat_with_files(
     prompt: str,
     file_ids: List[str],
     session: Optional[str] = None,
-    model: str = "grok-4-1-fast-reasoning",
+    model: str = "grok-4.3",
     system_prompt: Optional[str] = None
 ):
     """Chat with Grok using one or more previously uploaded files as context.
@@ -906,7 +906,7 @@ async def chat_with_files(
         prompt: Question or instruction about the attached files.
         file_ids: IDs of files previously returned by `upload_file`.
         session: Optional session name for persistent history in `chats/{session}.json`.
-        model: Grok model id (default `grok-4-1-fast-reasoning`).
+        model: Grok model id (default `grok-4.3`).
         system_prompt: Optional system instruction prepended to the conversation.
 
     Returns:
