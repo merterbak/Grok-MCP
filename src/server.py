@@ -229,7 +229,8 @@ async def generate_video(
     video_url: Optional[str] = None,
     duration: Optional[int] = None,
     aspect_ratio: Optional[str] = None,
-    resolution: Optional[str] = None
+    resolution: Optional[str] = None,
+    reference_image_urls: Optional[List[str]] = None
 ):
     """Generate or edit videos with Grok Imagine.
 
@@ -247,6 +248,7 @@ async def generate_video(
         duration: Video length in seconds (1–15, ignored when editing).
         aspect_ratio: Aspect ratio like `"16:9"` or `"9:16"` (ignored when editing).
         resolution: `"480p"` or `"720p"` (ignored when editing).
+        reference_image_urls: Public image URLs used as visual references for conditioning.
 
     Returns:
         Markdown block with the generated video URL and actual duration.
@@ -278,6 +280,8 @@ async def generate_video(
         params["aspect_ratio"] = aspect_ratio
     if resolution:
         params["resolution"] = resolution
+    if reference_image_urls:
+        params["reference_image_urls"] = reference_image_urls
 
     response = client.video.generate(**params)
     client.close()
