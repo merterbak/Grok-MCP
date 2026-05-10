@@ -169,3 +169,6 @@ poetry.toml
 
 # LSP config files
 pyrightconfig.json
+
+# Local chat history written by session-enabled MCP tools
+chats/
