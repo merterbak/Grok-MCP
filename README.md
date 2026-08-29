@@ -7,7 +7,7 @@ MCP server for xAI’s Grok API with Web/X search, vision, image/video generatio
 
 ## Features
 
-- **Agentic Tool Calling**: Web search, X search, and code execution with multi-step reasoning
+- **Agentic Tool Calling**: Web search, X search, code execution, and image generation with multi-step reasoning
 - **Multiple Grok Models**: Access to latest models such as grok-4.6, grok-4.5, grok-build-0.1 and more
 - **Image and Video Generation**: Create images and videos using Grok Imagine
 - **Vision Capabilities**: Analyze images with Grok's vision models
@@ -137,7 +137,8 @@ Each tool has a full docstring in [src/server.py](src/server.py) with its argume
 Note: For using images and files, you must provide paths to chat. See [Filesystem MCP (Optional)](#filesystem-mcp-optional) for setup.
 
 ### Chat and reasoning
-- `chat` — standard chat completion with optional persistent history and multi-agent support.
+- `chat` — standard chat completion with optional persistent history, multi-agent support,
+  and a per request `service_tier`.
 - `chat_with_vision` — analyze local or remote images with a Grok vision model.
 - `chat_with_files` — chat grounded on previously uploaded documents.
 - `stateful_chat` — continue a server-side stored conversation via `response_id`.
@@ -148,10 +149,12 @@ Note: For using images and files, you must provide paths to chat. See [Filesyste
 - `web_search` — autonomous web research with domain filters and citations.
 - `x_search` — autonomous search over X (Twitter) posts, with handle and date filters.
 - `code_executor` — solve tasks by running Python in a sandbox.
-- `grok_agent` — unified agent that mixes files, images, web search, X search, and code execution.
+- `grok_agent` — unified agent that mixes files, images, web search, X search, code execution,
+  and server-side image generation. Generated images are written to `images/`.
 
 ### Image and video
 - `generate_image` — create or edit images with Grok Imagine (multi-reference editing supported).
+  Pass `save=true` to write the results to `images/` instead of returning temporary URLs.
 - `generate_video` — text-to-video, image-to-video, or video editing with Grok Imagine.
 - `extend_video` — extend an existing generated video with a follow-up prompt.
 

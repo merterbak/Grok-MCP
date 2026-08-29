@@ -2,6 +2,7 @@ import os
 import json
 import base64
 from pathlib import Path
+from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv("example.env")
@@ -69,3 +70,15 @@ def build_params(**kwargs):
         if value:
             result[key] = value
     return result
+
+def save_generated_image(data: bytes, mime_type: str, index: int):
+    Path("images").mkdir(exist_ok=True)
+    ext = mime_type.removeprefix("image/") or "jpg"
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    path = Path("images") / f"grok-{stamp}-{index}.{ext}"
+    suffix = 2
+    while path.exists():
+        path = Path("images") / f"grok-{stamp}-{index}-{suffix}.{ext}"
+        suffix += 1
+    path.write_bytes(data)
+    return path

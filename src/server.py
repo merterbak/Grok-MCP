@@ -6,8 +6,8 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from xai_sdk import Client
 from xai_sdk.chat import user, system, assistant, image, file
-from xai_sdk.tools import web_search as xai_web_search, x_search as xai_x_search, code_execution
-from .utils import encode_image_to_base64, encode_video_to_base64, build_params, usage_footer, XAI_API_KEY, load_history, save_history
+from xai_sdk.tools import web_search as xai_web_search, x_search as xai_x_search, code_execution, image_generation as xai_image_generation
+from .utils import encode_image_to_base64, encode_video_to_base64, build_params, usage_footer, XAI_API_KEY, load_history, save_history, save_generated_image
 
 mcp = FastMCP(name="Grok MCP Server")
 READONLY = ToolAnnotations(readOnlyHint=True)
@@ -23,6 +23,7 @@ async def chat(
     model: str = "grok-4.6",
     system_prompt: Optional[str] = None,
     agent_count: Optional[int] = None,
+    service_tier: Optional[str] = None,
     show_usage: bool = False,
 ):
     """Send a text prompt to a Grok model and return its reply.
@@ -36,6 +37,7 @@ async def chat(
         model: Grok model id (default `grok-4.6`).
         system_prompt: Optional system instruction prepended to the conversation.
         agent_count: 4 or 16. Only valid with `grok-4.20-multi-agent` for multi-agent research.
+        service_tier: `"default"` or `"priority"`. Priority is processed faster at a higher token price.
         show_usage: Append a token usage and cost footer to the reply (default False).
 
     Returns:
@@ -47,6 +49,8 @@ async def chat(
     chat_params = {"model": model}
     if agent_count:
         chat_params["agent_count"] = agent_count
+    if service_tier:
+        chat_params["service_tier"] = service_tier
     grok = client.chat.create(**chat_params)
     if system_prompt:
         grok.append(system(system_prompt))
@@ -171,6 +175,7 @@ async def generate_image(
     image_format: str = "url",
     aspect_ratio: Optional[str] = None,
     resolution: Optional[str] = None,
+    save: bool = False,
     show_usage: bool = False,
 ):
     """Generate new images or edit existing ones with Grok Imagine.
@@ -184,13 +189,17 @@ async def generate_image(
         image_paths: Local image files (JPG/PNG) used as edit sources or references.
         image_urls: Public image URLs used as edit sources or references.
         n: Number of images to generate (1–10).
-        image_format: `"url"` (default) or `"base64"`.
+        image_format: `"url"` (default) or `"base64"`. Base64 responses carry no URL,
+            so they are always saved locally.
         aspect_ratio: Aspect ratio like `"16:9"`, `"1:1"`, or `"9:16"`.
         resolution: `"1k"` or `"2k"`.
+        save: Write each image to `images/` and report the local path instead of the
+            remote URL. Remote URLs are temporary, so save anything you want to keep.
         show_usage: Append a token usage and cost footer to the result (default False).
 
     Returns:
-        Markdown block with each generated image URL and any revised prompt.
+        Markdown block listing each image as a saved local path when saving, otherwise
+        as a temporary remote URL.
     """
     client = Client(api_key=XAI_API_KEY)
 
@@ -216,11 +225,15 @@ async def generate_image(
     images = client.image.sample_batch(**params)
     client.close()
 
+    save_locally = save or image_format == "base64"
+
     result = ["## Generated Image(s)\n\n"]
     for i, img in enumerate(images, 1):
-        result.append(f"\n**Image {i}:** {img.url}\n\n")
-        if img.prompt and img.prompt != prompt:
-            result.append(f"*Revised prompt:* {img.prompt}\n\n")
+        if save_locally:
+            path = save_generated_image(img.image, "image/jpeg", i)
+            result.append(f"\n**Image {i}:** `{path}`\n\n")
+        else:
+            result.append(f"\n**Image {i}:** {img.url}\n\n")
     footer = usage_footer(*images) if show_usage else ""
     return "\n".join(result) + footer
 
@@ -614,6 +627,8 @@ async def grok_agent(
     use_web_search: bool = False,
     use_x_search: bool = False,
     use_code_execution: bool = False,
+    use_image_generation: bool = False,
+    image_generation_action: Optional[str] = None,
     allowed_domains: Optional[List[str]] = None,
     excluded_domains: Optional[List[str]] = None,
     allowed_x_handles: Optional[List[str]] = None,
@@ -627,9 +642,10 @@ async def grok_agent(
     system_prompt: Optional[str] = None,
     max_turns: Optional[int] = None,
     agent_count: Optional[int] = None,
+    service_tier: Optional[str] = None,
     show_usage: bool = False,
 ):
-    """All-in-one Grok agent combining files, vision, web/X search, and code execution.
+    """All-in-one Grok agent combining files, vision, web/X search, code execution, and image generation.
 
     Enable any subset of tools and attach any mix of uploaded files and images.
     The agent decides which tools to use per turn. Supports optional local
@@ -645,6 +661,10 @@ async def grok_agent(
         use_web_search: Enable the agentic web search tool.
         use_x_search: Enable the agentic X (Twitter) search tool.
         use_code_execution: Enable the Python code execution tool.
+        use_image_generation: Enable the server-side image generation tool, letting the agent
+            create and edit images mid-conversation. Images are saved under `images/`.
+        image_generation_action: Which image capabilities to expose: `"auto"` (default, generate
+            and edit), `"generate"` (text-to-image only), or `"edit"` (editing only).
         allowed_domains: Web search allow-list (max 5, mutually exclusive with excluded).
         excluded_domains: Web search deny-list (max 5).
         allowed_x_handles: X search handle allow-list (max 10, mutually exclusive with excluded).
@@ -658,10 +678,12 @@ async def grok_agent(
         system_prompt: Optional system instruction prepended to the conversation.
         max_turns: Cap the agent's reasoning/tool turns.
         agent_count: 4 or 16. Only valid with `grok-4.20-multi-agent`.
+        service_tier: `"default"` or `"priority"`. Priority is processed faster at a higher token price.
         show_usage: Append a token usage and cost footer to the answer (default False).
 
     Returns:
-        Markdown with the answer body followed by a `**Sources:**` list when citations exist.
+        Markdown with the answer body, then a `**Generated Images:**` list of saved file paths
+        when the agent produced images, then a `**Sources:**` list when citations exist.
     """
     history = load_history(session) if session else []
 
@@ -690,7 +712,10 @@ async def grok_agent(
     
     if use_code_execution:
         tools.append(code_execution())
-    
+
+    if use_image_generation:
+        tools.append(xai_image_generation(action=image_generation_action))
+
     include_options = ["code_execution_call_output"]
     if include_inline_citations:
         include_options.append("inline_citations")
@@ -702,6 +727,8 @@ async def grok_agent(
         chat_params["max_turns"] = max_turns
     if agent_count:
         chat_params["agent_count"] = agent_count
+    if service_tier:
+        chat_params["service_tier"] = service_tier
 
     chat = client.chat.create(**chat_params)
 
@@ -741,6 +768,12 @@ async def grok_agent(
         save_history(session, history)
 
     result = [response.content]
+    if response.image_outputs:
+        result.append("\n\n**Generated Images:**")
+        for i, output in enumerate(response.image_outputs, 1):
+            path = save_generated_image(output.image, output.mime_type, i)
+            ref = f" (id `{output.image_uuid}`)" if output.image_uuid else ""
+            result.append(f"- Image {i}: `{path}`{ref}")
     if response.citations:
         result.append("\n\n**Sources:**")
         for url in response.citations:
