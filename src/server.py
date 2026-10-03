@@ -4,7 +4,7 @@ from typing import List, Optional
 from datetime import datetime
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
-from xai_sdk import Client
+from xai_sdk import Client, AsyncClient
 from xai_sdk.chat import user, system, assistant, image, file
 from xai_sdk.tools import web_search as xai_web_search, x_search as xai_x_search, code_execution, image_generation as xai_image_generation
 from .utils import encode_image_to_base64, encode_video_to_base64, build_params, usage_footer, XAI_API_KEY, load_history, save_history, save_generated_image
@@ -462,7 +462,7 @@ async def web_search(
     if excluded_domains and len(excluded_domains) > 5:
         raise ValueError("excluded_domains max 5")
     
-    client = Client(api_key=XAI_API_KEY)
+    client = AsyncClient(api_key=XAI_API_KEY)
     
     tool_params = build_params(
         allowed_domains=allowed_domains,
@@ -483,9 +483,9 @@ async def web_search(
     
     chat = client.chat.create(**chat_params)
     chat.append(user(prompt))
-    response = chat.sample()
+    response = await chat.sample()
     
-    client.close()
+    await client.close()
 
     result = [response.content]
     if response.citations:
@@ -538,7 +538,7 @@ async def x_search(
     if excluded_x_handles and len(excluded_x_handles) > 10:
         raise ValueError("excluded_x_handles max 10")
     
-    client = Client(api_key=XAI_API_KEY)
+    client = AsyncClient(api_key=XAI_API_KEY)
     
     tool_params = build_params(
         allowed_x_handles=allowed_x_handles,
@@ -561,9 +561,9 @@ async def x_search(
     
     chat = client.chat.create(**chat_params)
     chat.append(user(prompt))
-    response = chat.sample()
+    response = await chat.sample()
     
-    client.close()
+    await client.close()
 
     result = [response.content]
     if response.citations:
@@ -687,7 +687,7 @@ async def grok_agent(
     """
     history = load_history(session) if session else []
 
-    client = Client(api_key=XAI_API_KEY)
+    client = AsyncClient(api_key=XAI_API_KEY)
 
     tools = []
     if use_web_search:
@@ -759,10 +759,11 @@ async def grok_agent(
     
     content_items.append(prompt)
     chat.append(user(*content_items))
-    response = chat.sample()
-    client.close()
+    response = await chat.sample()
+    await client.close()
 
     if session:
+        history = load_history(session)
         history.append({"role": "user", "content": prompt, "time": datetime.now().strftime("%d.%m.%Y %H:%M:%S")})
         history.append({"role": "assistant", "content": response.content, "time": datetime.now().strftime("%d.%m.%Y %H:%M:%S")})
         save_history(session, history)
