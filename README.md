@@ -138,7 +138,7 @@ Note: For using images and files, you must provide paths to chat. See [Filesyste
 
 ### Chat and reasoning
 - `chat` — standard chat completion with optional persistent history, multi-agent support,
-  and a per request `service_tier`.
+  a per request `service_tier` and `guidelines`.
 - `chat_with_vision` — analyze local or remote images with a Grok vision model.
 - `chat_with_files` — chat grounded on previously uploaded documents.
 - `stateful_chat` — continue a server-side stored conversation via `response_id`.

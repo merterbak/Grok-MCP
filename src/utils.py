@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
 
-load_dotenv("example.env")
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 XAI_API_KEY = os.getenv("XAI_API_KEY", "")
 
@@ -69,6 +69,12 @@ def build_params(**kwargs):
     for key, value in kwargs.items():
         if value:
             result[key] = value
+    return result
+
+def build_guidelines(guidelines):
+    result = []
+    for category, behavior in guidelines.items():
+        result.append({"type": "policy", "category": category, "behavior": behavior})
     return result
 
 def save_generated_image(data: bytes, mime_type: str, index: int):

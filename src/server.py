@@ -1,13 +1,13 @@
 import json
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 from datetime import datetime
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from xai_sdk import Client, AsyncClient
 from xai_sdk.chat import user, system, assistant, image, file
 from xai_sdk.tools import web_search as xai_web_search, x_search as xai_x_search, code_execution, image_generation as xai_image_generation
-from .utils import encode_image_to_base64, encode_video_to_base64, build_params, usage_footer, XAI_API_KEY, load_history, save_history, save_generated_image
+from .utils import encode_image_to_base64, encode_video_to_base64, build_params, usage_footer, XAI_API_KEY, load_history, save_history, save_generated_image, build_guidelines
 
 mcp = FastMCP(name="Grok MCP Server")
 READONLY = ToolAnnotations(readOnlyHint=True)
@@ -24,6 +24,7 @@ async def chat(
     system_prompt: Optional[str] = None,
     agent_count: Optional[int] = None,
     service_tier: Optional[str] = None,
+    guidelines: Optional[Dict[str, str]] = None,
     show_usage: bool = False,
 ):
     """Send a text prompt to a Grok model and return its reply.
@@ -38,6 +39,8 @@ async def chat(
         system_prompt: Optional system instruction prepended to the conversation.
         agent_count: 4 or 16. Only valid with `grok-4.20-multi-agent` for multi-agent research.
         service_tier: `"default"` or `"priority"`. Priority is processed faster at a higher token price.
+        guidelines: Moderation settings like `{"violence": "decline"}`. Categories are `nsfw`,
+            `violence` and `profanity`. Doesn't work with multi-agent models.
         show_usage: Append a token usage and cost footer to the reply (default False).
 
     Returns:
@@ -51,6 +54,8 @@ async def chat(
         chat_params["agent_count"] = agent_count
     if service_tier:
         chat_params["service_tier"] = service_tier
+    if guidelines:
+        chat_params["guidelines"] = build_guidelines(guidelines)
     grok = client.chat.create(**chat_params)
     if system_prompt:
         grok.append(system(system_prompt))
@@ -643,6 +648,7 @@ async def grok_agent(
     max_turns: Optional[int] = None,
     agent_count: Optional[int] = None,
     service_tier: Optional[str] = None,
+    guidelines: Optional[Dict[str, str]] = None,
     show_usage: bool = False,
 ):
     """All-in-one Grok agent combining files, vision, web/X search, code execution, and image generation.
@@ -679,6 +685,8 @@ async def grok_agent(
         max_turns: Cap the agent's reasoning/tool turns.
         agent_count: 4 or 16. Only valid with `grok-4.20-multi-agent`.
         service_tier: `"default"` or `"priority"`. Priority is processed faster at a higher token price.
+        guidelines: Moderation settings like `{"violence": "decline"}`. Categories are `nsfw`,
+            `violence` and `profanity`. Doesn't work with multi-agent models.
         show_usage: Append a token usage and cost footer to the answer (default False).
 
     Returns:
@@ -729,6 +737,8 @@ async def grok_agent(
         chat_params["agent_count"] = agent_count
     if service_tier:
         chat_params["service_tier"] = service_tier
+    if guidelines:
+        chat_params["guidelines"] = build_guidelines(guidelines)
 
     chat = client.chat.create(**chat_params)
 
